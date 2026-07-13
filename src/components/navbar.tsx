@@ -32,8 +32,8 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/catalog", label: "Shop" },
-  { href: "/about", label: "Journal" },
   { href: "/about", label: "About" },
+  { href: "/dashboard", label: "Dashboard" },
 ] as const;
 
 export function Navbar() {
@@ -56,7 +56,6 @@ export function Navbar() {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const isAdmin = (user as { role?: string } | undefined)?.role === "admin";
 
   const handleSignOut = async () => {
     setSigningOut(true);
@@ -98,7 +97,7 @@ export function Navbar() {
               : "border-transparent bg-transparent"
           )}
         >
-          <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-6">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
             <div className="flex items-center gap-6">
               <button
                 type="button"
@@ -109,6 +108,13 @@ export function Navbar() {
               >
                 {mobileOpen ? <X /> : <Menu />}
               </button>
+
+              <Link
+                href="/"
+                className="font-heading text-[1.35rem] tracking-[-0.03em] text-foreground md:text-[1.55rem]"
+              >
+                Aesthete
+              </Link>
 
               <nav
                 aria-label="Primary"
@@ -126,13 +132,6 @@ export function Navbar() {
                 ))}
               </nav>
             </div>
-
-            <Link
-              href="/"
-              className="font-heading text-[1.35rem] tracking-[-0.03em] text-foreground md:text-[1.55rem]"
-            >
-              Aesthete
-            </Link>
 
             <div className="flex items-center justify-end gap-2 md:gap-4">
               <Button
@@ -185,12 +184,10 @@ export function Navbar() {
                       <ShoppingCart />
                       Cart
                     </DropdownMenuItem>
-                    {isAdmin ? (
-                      <DropdownMenuItem render={<Link href="/admin" />}>
-                        <LayoutDashboard />
-                        Admin dashboard
-                      </DropdownMenuItem>
-                    ) : null}
+                    <DropdownMenuItem render={<Link href="/dashboard" />}>
+                      <LayoutDashboard />
+                      Dashboard
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       variant="destructive"
@@ -283,15 +280,13 @@ export function Navbar() {
               >
                 Cart
               </Link>
-              {isAdmin ? (
-                <Link
-                  href="/admin"
-                  className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Admin dashboard
-                </Link>
-              ) : null}
+              <Link
+                href="/dashboard"
+                className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
+                onClick={() => setMobileOpen(false)}
+              >
+                Dashboard
+              </Link>
               <button
                 type="button"
                 onClick={() => {
