@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { Navbar } from "@/components/navbar";
+import { SiteFooter } from "@/components/site-footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { CartProvider } from "@/lib/cart";
 
 import "./globals.css";
 
@@ -38,11 +40,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <TooltipProvider>
-            {children}
+          <CartProvider>
+            <Navbar />
+            <TooltipProvider>
+            <div className="flex flex-1 flex-col">
+              {children}
+              <SiteFooter />
+            </div>
             <Toaster position="top-center" />
           </TooltipProvider>
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

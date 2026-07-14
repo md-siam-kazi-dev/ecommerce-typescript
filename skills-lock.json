@@ -13,6 +13,12 @@
       "skillPath": "security/SKILL.md",
       "computedHash": "7a230edf3a24ce18162cb4379f59b6a19b8d24ca04db530609d0f15cede556dc"
     },
+    "ckeditor": {
+      "source": "ckeditor/skills",
+      "sourceType": "github",
+      "skillPath": "skills/ckeditor/SKILL.md",
+      "computedHash": "c7b5c678433414b91e7c596a1c8e0989e0af007a0866bfe96666e9592a71562c"
+    },
     "create-auth": {
       "source": "better-auth/skills",
       "sourceType": "github",
@@ -78,6 +84,12 @@
       "sourceType": "github",
       "skillPath": "skills/gsap-utils/SKILL.md",
       "computedHash": "1ab2387f6e694718a4f1b5acf2a4ab16e1b884c3428adf5f6b26d830f00826cf"
+    },
+    "magic-ui": {
+      "source": "magicuidesign/magicui",
+      "sourceType": "github",
+      "skillPath": "skills/magic-ui/SKILL.md",
+      "computedHash": "751895d50c76490c6f92a68cdbe61100bd96b4963d1e91e37b5d82c8df0fc2d7"
     },
     "shadcn": {
       "source": "shadcn/ui",

@@ -3,7 +3,7 @@
 import { useState} from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { authClient } from "@/lib/auth-client";
@@ -29,6 +29,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  const DEMO_EMAIL = "demo@demo.com";
+  const DEMO_PASSWORD = "siamSiam1@";
+
+  const anyLoading = emailLoading || googleLoading || demoLoading;
 
   const cardVariants = {
     hidden: { opacity: 0, y: 16 },
@@ -62,6 +68,29 @@ export default function LoginPage() {
     if (emailLoading || googleLoading) return;
     setGoogleLoading(true);
     authClient.signIn.social({ provider: "google", callbackURL: "/" });
+  }
+
+  async function handleDemoLogin() {
+    if (anyLoading) return;
+    setDemoLoading(true);
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    try {
+      const { error } = await authClient.signIn.email({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+      });
+      if (error) {
+        toast.error(error.message ?? "Demo login failed. Please try again.");
+        return;
+      }
+      toast.success("Signed in with the demo account.");
+      router.push("/");
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setDemoLoading(false);
+    }
   }
 
   return (
@@ -99,6 +128,21 @@ export default function LoginPage() {
                   <GoogleIcon data-icon="inline-start" className="size-4" />
                 )}
                 Continue with Google
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-lg font-medium"
+                onClick={handleDemoLogin}
+                disabled={anyLoading}
+              >
+                {demoLoading ? (
+                  <Spinner data-icon="inline-start" />
+                ) : (
+                  <Sparkles data-icon="inline-start" className="size-4" />
+                )}
+                Continue with demo account
               </Button>
 
               <div className="relative">

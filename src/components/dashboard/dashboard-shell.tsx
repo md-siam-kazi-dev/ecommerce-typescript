@@ -1,10 +1,10 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { useSession } from "@/lib/auth-client";
-import { getUserRole } from "@/lib/user-role";
+import { getUserRole, type UserRole } from "@/lib/user-role";
 import { getDashboardNav } from "@/config/dashboard-nav";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import {
@@ -12,32 +12,34 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardLoadingSkeleton } from "@/components/dashboard/dashboard-loading";
+
+function normalizeRole(role: unknown): UserRole | undefined {
+  return role === "admin" || role === "user" ? role : undefined;
+}
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
-  const { data: session, isPending } = useSession();
+  const params = useParams<{ role?: string }>();
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, isPending } = useSession();
 
-  const user = session?.user;
-  const role = getUserRole(user);
+  const roleParam = normalizeRole(params.role);
+  const role: UserRole = roleParam ?? "user";
+  const actualRole = getUserRole(session?.user);
   const nav = getDashboardNav(role);
 
   useEffect(() => {
     if (!isPending && !session) {
       router.replace("/auth/login");
+      return;
     }
-  }, [isPending, session, router]);
+    if (!isPending && roleParam && roleParam !== actualRole) {
+      router.replace(`/dashboard/${actualRole}`);
+    }
+  }, [isPending, session, router, roleParam, actualRole]);
 
-  if (isPending) {
-    return (
-      <div className="flex min-h-svh items-center justify-center">
-        <Skeleton className="h-8 w-40" />
-      </div>
-    );
-  }
-
-  if (!session) return null;
+  
 
   const activeTitle =
     nav.find((item) => item.href === pathname)?.title ?? "Dashboard";
@@ -57,7 +59,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </span>
           </div>
         </header>
-        <div className="p-4 md:p-6">{children}</div>
+        <div className="p-4 md:p-6">{session ? children : null}</div>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,40 +1,18 @@
 "use client";
 
-import {
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Package,
-  Search,
-  ShoppingBag,
-  ShoppingCart,
-  User,
-  X,
-} from "lucide-react";
+import { Menu, Search, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { authClient, useSession } from "@/lib/auth-client";
+import { getUserRole } from "@/lib/user-role";
+import { useCart } from "@/lib/cart";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/catalog", label: "Shop" },
-  { href: "/about", label: "About" },
-  { href: "/dashboard", label: "Dashboard" },
-] as const;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -43,6 +21,17 @@ export function Navbar() {
 
   const router = useRouter();
   const { data: session, isPending } = useSession();
+  const { count } = useCart();
+
+  const dashboardHref = session
+    ? `/dashboard/${getUserRole(session.user)}`
+    : "";
+  const navLinks = [
+    { href: "/shop", label: "Shop" },
+    { href: "/about", label: "About" },
+    { href: "/contactus", label: "Contact" },
+    { href: dashboardHref, label: "Dashboard" },
+  ] as const;
 
   const user = session?.user;
   const displayName = user?.name ?? user?.email ?? "";
@@ -124,7 +113,7 @@ export function Navbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="group relative text-sm font-medium text-foreground"
+                    className={`group relative  text-sm font-medium text-foreground ${isPending && link.label === 'Dashboard' && 'hidden'}`}
                   >
                     {link.label}
                     <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-primary transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:w-full" />
@@ -148,57 +137,17 @@ export function Navbar() {
               {isPending ? (
                 <Skeleton className="hidden h-8 w-28 rounded-full sm:inline-flex" />
               ) : session ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={
-                      <Button
-                        variant="ghost"
-                        className="hidden gap-2 rounded-full pl-1 pr-3 sm:inline-flex"
-                      />
-                    }
-                  >
-                    <Avatar className="size-7">
-                      {user?.image ? (
-                        <AvatarImage src={user.image} alt={displayName} />
-                      ) : null}
-                      <AvatarFallback>{initials || "U"}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium text-foreground">
-                      {shortName}
-                    </span>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel className="truncate font-normal">
-                      {displayName}
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem render={<Link href="/account" />}>
-                      <User />
-                      Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem render={<Link href="/orders" />}>
-                      <Package />
-                      Orders
-                    </DropdownMenuItem>
-                    <DropdownMenuItem render={<Link href="/cart" />}>
-                      <ShoppingCart />
-                      Cart
-                    </DropdownMenuItem>
-                    <DropdownMenuItem render={<Link href="/dashboard" />}>
-                      <LayoutDashboard />
-                      Dashboard
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      variant="destructive"
-                      disabled={signingOut}
-                      onSelect={handleSignOut}
-                    >
-                      <LogOut />
-                      {signingOut ? "Signing out…" : "Sign out"}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="hidden items-center gap-2 sm:inline-flex">
+                  <Avatar className="size-7">
+                    {user?.image ? (
+                      <AvatarImage src={user.image} alt={displayName} />
+                    ) : null}
+                    <AvatarFallback>{initials || "U"}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium text-foreground">
+                    {shortName}
+                  </span>
+                </div>
               ) : (
                 <Link
                   href="/auth/login"
@@ -210,12 +159,15 @@ export function Navbar() {
 
               <Button
                 variant="outline"
+                nativeButton={false}
+                render={<Link href="/cart" />}
                 className="rounded-full border-border bg-background/70 px-4 shadow-none backdrop-blur-sm"
+                aria-label="View cart"
               >
                 <ShoppingBag data-icon="inline-start" />
                 Cart
                 <span className="font-mono text-[0.7rem] tabular-nums text-muted-foreground">
-                  0
+                  {count}
                 </span>
               </Button>
             </div>
@@ -281,7 +233,7 @@ export function Navbar() {
                 Cart
               </Link>
               <Link
-                href="/dashboard"
+                href={dashboardHref}
                 className="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground"
                 onClick={() => setMobileOpen(false)}
               >

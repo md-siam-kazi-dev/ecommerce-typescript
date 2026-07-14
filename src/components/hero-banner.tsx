@@ -55,7 +55,7 @@ export function HeroBanner() {
   return (
     <section ref={root} className="relative overflow-hidden pt-24">
       <div className="relative mx-auto grid max-w-7xl gap-12 px-6 pb-20 pt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-end lg:gap-16 lg:pb-28 lg:pt-24">
-        <div className="relative flex flex-col gap-8 lg:gap-10">
+        <div className="relative flex flex-col items-center gap-8 text-center lg:items-start lg:gap-10 lg:text-left">
           <div
             aria-hidden
             className="absolute -left-6 top-2 hidden h-[calc(100%-0.5rem)] w-px bg-border lg:block"
@@ -77,16 +77,16 @@ export function HeroBanner() {
 
           <p
             data-anim="sub"
-            className="max-w-md text-base leading-relaxed text-muted-foreground md:text-lg"
+            className="mx-auto max-w-md text-base leading-relaxed text-muted-foreground md:text-lg lg:mx-0"
           >
             A considered edit of home goods, textiles, and tableware — chosen
             for material honesty and the quiet pleasure of use.
           </p>
 
-          <div data-anim="cta" className="flex flex-wrap items-center gap-3">
+          <div data-anim="cta" className="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Button
               nativeButton={false}
-              render={<Link href="/catalog" />}
+                render={<Link href="/shop" />}
               size="lg"
               className="h-11 rounded-full px-6 shadow-none"
             >
@@ -106,14 +106,14 @@ export function HeroBanner() {
 
           <dl
             data-anim="stats"
-            className="grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8"
+            className="mx-auto grid max-w-lg grid-cols-3 gap-6 border-t border-border pt-8 lg:mx-0"
           >
             {[
               { value: "48", label: "Pieces" },
               { value: "12", label: "Makers" },
               { value: "3", label: "Materials" },
             ].map((stat) => (
-              <div key={stat.label} className="flex flex-col gap-1">
+              <div key={stat.label} className="flex flex-col items-center gap-1 lg:items-start">
                 <dt className="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
                   {stat.label}
                 </dt>

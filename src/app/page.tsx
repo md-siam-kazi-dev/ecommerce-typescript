@@ -1,11 +1,13 @@
 import { HeroBanner } from "@/components/hero-banner";
-import { TrendingProducts } from "@/components/trending-products";
+import { TrendingCj } from "@/components/product/trending-cj";
+import { ReviewsSection } from "@/components/reviews-section";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col">
       <HeroBanner />
-      <TrendingProducts />
+      <TrendingCj />
+      <ReviewsSection />
     </main>
   );
 }

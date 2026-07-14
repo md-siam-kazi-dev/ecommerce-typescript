@@ -1,8 +1,10 @@
 import {
   BarChart3,
+  FileText,
   Heart,
   LayoutDashboard,
   Package,
+  Plus,
   Settings,
   ShoppingBag,
   User,
@@ -19,21 +21,25 @@ export interface DashboardNavItem {
 }
 
 export function getDashboardNav(role: UserRole): DashboardNavItem[] {
-  if (role === "admin") {
-    return [
-      { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
-      { title: "Products", href: "/dashboard/products", icon: Package },
-      { title: "Orders", href: "/dashboard/orders", icon: ShoppingBag },
-      { title: "Customers", href: "/dashboard/customers", icon: Users },
-      { title: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-    ];
-  }
+  const base = `/dashboard/${role}`;
+
+    if (role === "admin") {
+      return [
+        { title: "Overview", href: base, icon: LayoutDashboard },
+        { title: "Products", href: `${base}/products`, icon: Package },
+        { title: "Add product", href: `${base}/products/new`, icon: Plus },
+        { title: "Add Blog", href: `${base}/blog/new`, icon: FileText },
+        { title: "Orders", href: `${base}/orders`, icon: ShoppingBag },
+        { title: "Customers", href: `${base}/customers`, icon: Users },
+        { title: "Analytics", href: `${base}/analytics`, icon: BarChart3 },
+      ];
+    }
 
   return [
-    { title: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { title: "Orders", href: "/dashboard/orders", icon: ShoppingBag },
-    { title: "Wishlist", href: "/dashboard/wishlist", icon: Heart },
-    { title: "Profile", href: "/dashboard/profile", icon: User },
-    { title: "Settings", href: "/dashboard/settings", icon: Settings },
+    { title: "Overview", href: base, icon: LayoutDashboard },
+    { title: "Orders", href: `${base}/orders`, icon: ShoppingBag },
+    { title: "Wishlist", href: `${base}/wishlist`, icon: Heart },
+    { title: "Profile", href: `${base}/profile`, icon: User },
+    { title: "Settings", href: `${base}/settings`, icon: Settings },
   ];
 }
