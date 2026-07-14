@@ -39,7 +39,7 @@ export function TrendingCj() {
 
   if (loading) {
     return (
-      <section ref={root} className="mx-auto  px-6 py-16 lg:py-20">
+      <section ref={root} className="mx-auto w-full  px-6 py-16 lg:py-20">
         <div className="flex flex-col gap-2">
           <p className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-muted-foreground">
             Vol. 04 — Trending
