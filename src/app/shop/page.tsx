@@ -161,7 +161,7 @@ export default function ShopPage() {
           {loading ? (
             <div
               data-grid
-              className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+              className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
             >
               {Array.from({ length: 8 }).map((_, i) => (
                 <CjProductCardSkeleton key={i} />
@@ -191,7 +191,7 @@ export default function ShopPage() {
           ) : (
             <div
               data-grid
-              className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+              className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
             >
               {filtered.map((product) => (
                 <CjProductCard key={product.productId} product={product} />
