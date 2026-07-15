@@ -132,17 +132,33 @@ export function CjProductCard({ product }: { product: CJMyProduct }) {
 
 export function CjProductCardSkeleton() {
   return (
-    <Card className="overflow-hidden pt-0">
+    <Card className="flex h-full flex-col overflow-hidden">
+      {/* Image Placeholder */}
       <Skeleton className="aspect-square w-full rounded-none" />
-      <CardContent className="flex flex-col justify-between gap-3">
-        <Skeleton className="h-4 w-3/4" />
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-5 w-16" />
-          <Skeleton className="h-7 w-20 rounded-full" />
-          <div className="flex items-center gap-2 pt-1">
-            <Skeleton className="h-9 w-full flex-1 rounded-full" />
-            <Skeleton className="h-9 w-full flex-1 rounded-full" />
+
+      {/* Content Wrapper */}
+      <CardContent className="flex flex-1 flex-col justify-between gap-3">
+        {/* Title Placeholder (Simulating line-clamp-2) */}
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-2/3" />
+        </div>
+
+        {/* Bottom Actions Area */}
+        <div className="mt-auto flex flex-col gap-2 pt-1">
+          
+          {/* Price & Quantity Row */}
+          <div className="flex items-center justify-between gap-2">
+            <Skeleton className="h-7 w-16" /> {/* Price placeholder */}
+            <Skeleton className="h-8 w-20 rounded-full" /> {/* Select placeholder */}
           </div>
+
+          {/* Buttons Stack */}
+          <div className="flex flex-col items-stretch gap-2.5 px-2 pb-1 pt-2 sm:flex-col">
+            <Skeleton className="h-10 w-full rounded-full" /> {/* Add to cart button */}
+            <Skeleton className="h-10 w-full rounded-full" /> {/* Details button */}
+          </div>
+          
         </div>
       </CardContent>
     </Card>
