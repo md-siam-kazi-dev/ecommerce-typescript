@@ -91,6 +91,12 @@
       "skillPath": "skills/magic-ui/SKILL.md",
       "computedHash": "751895d50c76490c6f92a68cdbe61100bd96b4963d1e91e37b5d82c8df0fc2d7"
     },
+    "nodemailer": {
+      "source": "aidotnet/moyucode",
+      "sourceType": "github",
+      "skillPath": "skills/tools/nodemailer/SKILL.md",
+      "computedHash": "c9a8c08c0fa6ab15d6331e5346e33768a83b5e337d1160c620f87893122061a6"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

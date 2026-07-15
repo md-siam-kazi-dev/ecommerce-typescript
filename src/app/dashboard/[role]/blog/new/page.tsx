@@ -63,6 +63,7 @@ export default function AdminAddBlogPage() {
 
     setSubmitting(true);
     // No blog backend yet — surface the payload and confirm to the admin.
+    
     console.log("New blog post:", payload);
     toast.success("Blog post saved.");
     setSubmitting(false);

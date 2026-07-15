@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -21,7 +22,7 @@ export function Navbar() {
 
   const router = useRouter();
   const { data: session, isPending } = useSession();
-  const { count } = useCart();
+  const { count, loading: cartLoading } = useCart();
 
   const dashboardHref = session
     ? `/dashboard/${getUserRole(session.user)}`
@@ -166,9 +167,13 @@ export function Navbar() {
               >
                 <ShoppingBag data-icon="inline-start" />
                 Cart
-                <span className="font-mono text-[0.7rem] tabular-nums text-muted-foreground">
-                  {count}
-                </span>
+                {cartLoading ? (
+                  <Spinner className="size-3.5" />
+                ) : (
+                  <span className="font-mono text-[0.7rem] tabular-nums text-muted-foreground">
+                    {count}
+                  </span>
+                )}
               </Button>
             </div>
           </div>
