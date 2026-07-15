@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -21,12 +22,13 @@ import { cn } from "@/lib/utils";
 import { useSession } from "@/lib/auth-client";
 import { useCart } from "@/lib/cart";
 import { getAuthToken } from "@/lib/api";
+import { fetchCjProduct } from "@/lib/cj-product";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { sampleProduct } from "./sample-product";
 import { getStockLevel, type StorefrontProduct } from "./types";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -57,12 +59,6 @@ function Gallery({ images, activeImage, title }: { images: string[]; activeImage
   const [main, setMain] = useState(activeImage);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
   const [zoomed, setZoomed] = useState(false);
-
-  // Reset to the variant's image whenever the selected variant changes,
-  // but let the user freely browse thumbnails otherwise.
-  useEffect(() => {
-    setMain(activeImage);
-  }, [activeImage]);
 
   const displayed = images.includes(main) ? main : images[0];
 
@@ -116,9 +112,9 @@ function Gallery({ images, activeImage, title }: { images: string[]; activeImage
 }
 
 // ---------------------------------------------------------------------------
-// Main component
+// Presentational component
 // ---------------------------------------------------------------------------
-export default function ProductDetailPage({ product = sampleProduct }: { product?: StorefrontProduct }) {
+function ProductDetailView({ product }: { product: StorefrontProduct }) {
   // Selected variant options, e.g. { Color: "Sand", Size: "M" }
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [qty, setQty] = useState(1);
@@ -126,8 +122,7 @@ export default function ProductDetailPage({ product = sampleProduct }: { product
 
   const { data: session } = useSession();
   const { addItem } = useCart();
-  const params = useParams();
-  const productId = typeof params.id === "string" ? params.id : product.slug;
+  const productId = product.slug;
 
   const activeVariant = useMemo(() => {
     if (!product.hasVariants) return undefined;
@@ -242,7 +237,7 @@ export default function ProductDetailPage({ product = sampleProduct }: { product
           className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16"
         >
           {/* Gallery */}
-          <Gallery images={product.images} activeImage={displayImage} title={product.title} />
+          <Gallery key={displayImage} images={product.images} activeImage={displayImage} title={product.title} />
 
           {/* Info column — sticky on large screens */}
           <div className="flex flex-col lg:sticky lg:top-24 lg:h-fit">
@@ -390,8 +385,6 @@ export default function ProductDetailPage({ product = sampleProduct }: { product
             <TabsContent value="description" className="pt-5">
               <div
                 className="prose prose-sm max-w-none text-muted-foreground [&_img]:rounded-lg [&_img]:my-4 [&_b]:text-foreground"
-                // NOTE: sanitize with e.g. DOMPurify server-side before render —
-                // this HTML originates from admin/supplier import (FR-11k).
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </TabsContent>
@@ -439,4 +432,74 @@ export default function ProductDetailPage({ product = sampleProduct }: { product
       </div>
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Route — reads `id` from params, fetches from the CJ Product Details API,
+// maps to StorefrontProduct, and renders it (with loading / error states).
+// ---------------------------------------------------------------------------
+export default function ProductPage() {
+  const params = useParams();
+  const productId = typeof params.id === "string" ? params.id : "";
+
+  const [product, setProduct] = useState<StorefrontProduct | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!productId) return;
+    let active = true;
+
+    fetchCjProduct(productId)
+      .then((data) => {
+        if (active) setProduct(data);
+      })
+      .catch((err: unknown) => {
+        if (active) setError(err instanceof Error ? err.message : "Failed to load product");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto max-w-6xl px-4 pt-28 pb-8 sm:pt-32 sm:pb-12">
+          <Skeleton className="mb-6 h-4 w-48" />
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+            <Skeleton className="aspect-square w-full rounded-2xl" />
+            <div className="flex flex-col gap-4">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 px-4 text-center">
+        <h1 className="font-heading text-2xl font-semibold">Product not found</h1>
+        <p className="text-sm text-muted-foreground">
+          {error ?? "We couldn't find the product you were looking for."}
+        </p>
+        <Button nativeButton={false} render={<Link href="/shop">Back to shop</Link>}>
+          Back to shop
+        </Button>
+      </div>
+    );
+  }
+
+  return <ProductDetailView product={product} />;
 }

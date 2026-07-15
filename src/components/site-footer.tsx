@@ -67,6 +67,7 @@ export function SiteFooter() {
                   key={label}
                   variant="ghost"
                   size="icon"
+                  nativeButton={false}
                   className="rounded-full text-primary-foreground/80 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                   render={
                     <Link

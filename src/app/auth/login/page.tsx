@@ -94,7 +94,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 font-sans antialiased">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 pb-12 pt-28 font-sans antialiased sm:pt-32">
       
 
       <motion.div
