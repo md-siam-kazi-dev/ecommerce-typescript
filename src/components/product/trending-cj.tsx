@@ -50,7 +50,7 @@ export function TrendingCj() {
         </div>
         <div
           data-grid
-          className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+          className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
         >
           {Array.from({ length: 8 }).map((_, i) => (
             <CjProductCardSkeleton key={i} />
@@ -87,7 +87,7 @@ export function TrendingCj() {
 
       <div
         data-grid
-        className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
+        className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
       >
         {trending.map((product) => (
           <CjProductCard key={product.productId} product={product} />
